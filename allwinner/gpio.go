@@ -1031,7 +1031,7 @@ func (d *driverGPIO) Init() (bool, error) {
 		}
 	case IsH6():
 		fmt.Println("Is H6 CPU!!!")
-		if err := mapH5Pins(); err != nil {
+		if err := mapH6Pins(); err != nil {
 			return true, err
 		}
 	default:
