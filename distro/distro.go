@@ -60,6 +60,13 @@ func IsRaspbian() bool {
 	return false
 }
 
+// IsNixos returns true if running on a NixOs distribution.
+//
+// https://nixos.org/
+func IsNixos() bool {
+	return isLinux && OSRelease()["ID"] == "nixos"
+}
+
 // IsUbuntu returns true if running on an Ubuntu derived distribution.
 //
 // https://ubuntu.com/

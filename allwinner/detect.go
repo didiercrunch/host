@@ -60,6 +60,11 @@ func IsH5() bool {
 	return detection.isH5
 }
 
+func IsH6() bool {
+	detection.do()
+	return detection.isH5
+}
+
 //
 
 type detectionS struct {
@@ -71,6 +76,7 @@ type detectionS struct {
 	isA64       bool
 	isH3        bool
 	isH5        bool
+	isH6        bool
 }
 
 var detection detectionS
@@ -103,6 +109,9 @@ func (d *detectionS) do() {
 				}
 				if strings.Contains(c, "sun50i-h5") {
 					d.isH5 = true
+				}
+				if strings.Contains(c, "question-mark") {
+					d.isH6 = true
 				}
 			}
 			d.isAllwinner = d.isA64 || d.isR8 || d.isA20 || d.isH3 || d.isH5

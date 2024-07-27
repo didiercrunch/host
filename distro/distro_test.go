@@ -88,6 +88,11 @@ func TestIsRaspbian(t *testing.T) {
 	IsRaspbian()
 }
 
+func TestIsNixos(t *testing.T) {
+	// At least ensure it doesn't crash.
+	IsNixos()
+}
+
 func TestIsUbuntu(t *testing.T) {
 	// At least ensure it doesn't crash.
 	IsUbuntu()

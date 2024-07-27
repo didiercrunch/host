@@ -31,7 +31,7 @@ func DTModel() string {
 func DTCompatible() []string {
 	mu.Lock()
 	defer mu.Unlock()
-	fmt.Println("\n\n\n\n\tdidier: Deep in the dependencies...\n\n\n\n\n")
+	fmt.Println("\n\n\n\n\tdidier: Deep in the dependencies...")
 
 	if dtCompatible == nil {
 		dtCompatible = []string{}
