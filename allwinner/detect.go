@@ -62,9 +62,12 @@ func IsH5() bool {
 	return detection.isH5
 }
 
+// IsH6 detects whether the host CPU is an Allwinner H6 CPU.
+//
+// It looks for the string "sun50i-h6" in /proc/device-tree/compatible.
 func IsH6() bool {
 	detection.do()
-	return detection.isH5
+	return detection.isH6
 }
 
 //
