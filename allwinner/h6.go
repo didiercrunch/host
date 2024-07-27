@@ -17,6 +17,8 @@ import (
 
 // mappingH6 describes the mapping of the H5 processor gpios to their
 // alternate functions.
+// According to https://linux-sunxi.org/H616 H616 and H618 are the same.
+// allwinner marketing team seems to disagree.
 //
 // It omits the in & out functions which are available on all gpio.
 //
