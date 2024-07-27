@@ -483,6 +483,7 @@ func (p *Pin) setFunction(f function) {
 	drvGPIO.gpioMemory.groups[p.group].cfg[off] |= mask
 	drvGPIO.gpioMemory.groups[p.group].cfg[off] &^= v
 	if p.function() != f {
+		fmt.Printf("Expected %d to equals %d \n", p.function(), f)
 		panic(f)
 	}
 }
