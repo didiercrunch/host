@@ -1007,6 +1007,7 @@ func (d *driverGPIO) Init() (bool, error) {
 
 	// Mark the right pins as available even if the memory map fails so they can
 	// callback to sysfs.Pins.
+	fmt.Println("Didier initiating allwinner gpio")
 	switch {
 	case IsA64():
 		if err := mapA64Pins(); err != nil {
@@ -1029,10 +1030,12 @@ func (d *driverGPIO) Init() (bool, error) {
 			return true, err
 		}
 	case IsH6():
+		fmt.Println("Is H6 CPU!!!")
 		if err := mapH5Pins(); err != nil {
 			return true, err
 		}
 	default:
+		fmt.Println("error: unknown Allwinner CPU model")
 		return false, errors.New("unknown Allwinner CPU model")
 	}
 
@@ -1050,6 +1053,7 @@ func (d *driverGPIO) Init() (bool, error) {
 
 func init() {
 	if isArm {
+		fmt.Println("Stating to initiate allwinner")
 		driverreg.MustRegister(&drvGPIO)
 	}
 }
