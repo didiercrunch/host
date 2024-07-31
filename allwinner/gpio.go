@@ -1092,6 +1092,7 @@ func getBaseAddress() uint64 {
 }
 
 func getBaseAddressDidier() uint64 {
+	fmt.Println("OK did is insane shit.")
 	return uint64(0x300b000)
 }
 
