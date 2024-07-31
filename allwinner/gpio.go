@@ -310,9 +310,9 @@ func (p *Pin) Read() gpio.Level {
 // This function is very fast.
 func (p *Pin) FastRead() gpio.Level {
 
-	foo := drvGPIO.gpioMemory.groups[p.group]
-	fmt.Printf("Group value is: %d", foo.data)
-	return gpio.Level(foo.data&(1<<p.offset) != 0)
+	foo := drvGPIO.gpioMemory.groups[p.group].data
+	fmt.Printf("Group value is: %d", foo)
+	return gpio.Level(foo&(1<<p.offset) != 0)
 }
 
 // WaitForEdge implements gpio.PinIn.
