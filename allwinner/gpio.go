@@ -309,7 +309,10 @@ func (p *Pin) Read() gpio.Level {
 //
 // This function is very fast.
 func (p *Pin) FastRead() gpio.Level {
-	return gpio.Level(drvGPIO.gpioMemory.groups[p.group].data&(1<<p.offset) != 0)
+
+	foo := drvGPIO.gpioMemory.groups[p.group]
+	fmt.Printf("Group value is: %d", foo.data)
+	return gpio.Level(foo.data&(1<<p.offset) != 0)
 }
 
 // WaitForEdge implements gpio.PinIn.
@@ -480,8 +483,15 @@ func (p *Pin) setFunction(f function) {
 	mask := uint32(disabled) << shift
 	v := (uint32(f) << shift) ^ mask
 	// First disable, then setup. This is concurrent safe.
+	original := drvGPIO.gpioMemory.groups[p.group].cfg[off]
 	drvGPIO.gpioMemory.groups[p.group].cfg[off] |= mask
 	drvGPIO.gpioMemory.groups[p.group].cfg[off] &^= v
+
+	modified := original | mask
+	modified &^= v
+	fmt.Printf("Original: %d\n", original)
+	fmt.Printf("Modified: %d\n", modified)
+	fmt.Printf("Memory mapped value: %d\n", drvGPIO.gpioMemory.groups[p.group].cfg[off])
 	if p.function() != f {
 		fmt.Printf("Pin number %d. Pin name %s.\n Expected %d to equals %d \n", p.Number(), p.Name(), p.function(), f)
 		panic(f)
