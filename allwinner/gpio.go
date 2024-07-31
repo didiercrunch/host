@@ -1051,7 +1051,7 @@ func (d *driverGPIO) Init() (bool, error) {
 	}
 
 	// gpioBaseAddr is the physical base address of the GPIO registers.
-	gpioBaseAddr := uint32(getBaseAddress())
+	gpioBaseAddr := uint32(getBaseAddressDidier())
 	if err := pmem.MapAsPOD(uint64(gpioBaseAddr), &d.gpioMemory); err != nil {
 		if os.IsPermission(err) {
 			return true, fmt.Errorf("need more access, try as root: %v", err)
@@ -1089,6 +1089,10 @@ func getBaseAddress() uint64 {
 		return base
 	}
 	return base2
+}
+
+func getBaseAddressDidier() uint64 {
+	return uint64(0x300b000)
 }
 
 var drvGPIO driverGPIO
