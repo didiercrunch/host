@@ -116,7 +116,6 @@ func (d *detectionS) do() {
 					d.isH5 = true
 				}
 				if strings.Contains(c, "sun50i-h6") {
-					fmt.Println("isH6 detected")
 					d.isH6 = true
 				}
 			}
