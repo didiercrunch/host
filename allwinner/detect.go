@@ -98,7 +98,6 @@ func (d *detectionS) do() {
 		d.done = true
 		if isArm {
 			for _, c := range distro.DTCompatible() {
-				fmt.Println("distro >>> " + c)
 				if strings.Contains(c, "sun50iw1p1") {
 					d.isA64 = true
 				}

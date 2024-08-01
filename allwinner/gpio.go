@@ -11,7 +11,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"path"
 	"strconv"
 	"strings"
 	"time"
@@ -483,17 +482,9 @@ func (p *Pin) setFunction(f function) {
 	mask := uint32(disabled) << shift
 	v := (uint32(f) << shift) ^ mask
 	// First disable, then setup. This is concurrent safe.
-	original := drvGPIO.gpioMemory.groups[p.group].cfg[off]
 	drvGPIO.gpioMemory.groups[p.group].cfg[off] |= mask
 	drvGPIO.gpioMemory.groups[p.group].cfg[off] &^= v
-
-	modified := original | mask
-	modified &^= v
-	fmt.Printf("Original: %d\n", original)
-	fmt.Printf("Modified: %d\n", modified)
-	fmt.Printf("Memory mapped value: %d\n", drvGPIO.gpioMemory.groups[p.group].cfg[off])
 	if p.function() != f {
-		fmt.Printf("Pin number %d. Pin name %s.\n Expected %d to equals %d \n", p.Number(), p.Name(), p.function(), f)
 		panic(f)
 	}
 }
@@ -1018,7 +1009,6 @@ func (d *driverGPIO) Init() (bool, error) {
 
 	// Mark the right pins as available even if the memory map fails so they can
 	// callback to sysfs.Pins.
-	fmt.Println("Didier initiating allwinner gpio")
 	switch {
 	case IsA64():
 		if err := mapA64Pins(); err != nil {
@@ -1041,18 +1031,19 @@ func (d *driverGPIO) Init() (bool, error) {
 			return true, err
 		}
 	case IsH6():
-		fmt.Println("Is H6 CPU!!!")
 		if err := mapH6Pins(); err != nil {
 			return true, err
 		}
 	default:
-		fmt.Println("error: unknown Allwinner CPU model")
 		return false, errors.New("unknown Allwinner CPU model")
 	}
 
 	// gpioBaseAddr is the physical base address of the GPIO registers.
-	gpioBaseAddr := uint32(getBaseAddressDidier())
-	if err := pmem.MapAsPOD(uint64(gpioBaseAddr), &d.gpioMemory); err != nil {
+	gpioBaseAddr, err := getBaseAddress()
+	if err != nil {
+		return true, err
+	}
+	if err := pmem.MapAsPOD(gpioBaseAddr, &d.gpioMemory); err != nil {
 		if os.IsPermission(err) {
 			return true, fmt.Errorf("need more access, try as root: %v", err)
 		}
@@ -1064,36 +1055,8 @@ func (d *driverGPIO) Init() (bool, error) {
 
 func init() {
 	if isArm {
-		fmt.Println("Stating to initiate allwinner")
 		driverreg.MustRegister(&drvGPIO)
 	}
-}
-
-// getBaseAddress queries the virtual file system to retrieve the base address
-// of the GPIO registers for GPIO pins in groups PA to PI.
-//
-// Defaults to 0x01C20800 as per datasheet if it could not query the file
-// system.
-func getBaseAddress() uint64 {
-	base := uint64(0x01C20800)
-	link, err := os.Readlink("/sys/bus/platform/drivers/sun50i-pinctrl/driver")
-	if err != nil {
-		return base
-	}
-	parts := strings.SplitN(path.Base(link), ".", 2)
-	if len(parts) != 2 {
-		return base
-	}
-	base2, err := strconv.ParseUint(parts[0], 16, 64)
-	if err != nil {
-		return base
-	}
-	return base2
-}
-
-func getBaseAddressDidier() uint64 {
-	fmt.Println("OK did is insane shit.")
-	return uint64(0x300b000)
 }
 
 var drvGPIO driverGPIO
