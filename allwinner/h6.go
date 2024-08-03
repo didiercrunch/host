@@ -57,6 +57,27 @@ var mappingH6 = map[string][5]pin.Func{
 	"PF4": {"SDC0_D3", "UTAR0_RX", "", "", "PF_EINT4"},
 	"PF5": {"SDC0_D2", "JTAG_CK", "", "", "PF_EINT5"},
 	"PF6": {"", "", "", "", "PF_EINT6"},
+
+	"PG0":  {"SDC1_CLK", "", "", "", "PG_EINT0"},
+	"PG1":  {"SDC1_CMD", "", "", "", "PG_EINT1"},
+	"PG2":  {"SDC1_D0", "", "", "", "PG_EINT2"},
+	"PG3":  {"SDC1_D1", "", "", "", "PG_EINT3"},
+	"PG4":  {"SDC1_D2", "", "", "", "PG_EINT4"},
+	"PG5":  {"SDC1_D3", "", "", "", "PG_EINT5"},
+	"PG6":  {"UTAR1_TX", "", "JTAG_MS", "", "PG_EINT6"},
+	"PG7":  {"UTAR1_RX", "", "JTAG_CK", "", "PG_EINT7"},
+	"PG8":  {"UTAR1_RTS", "PLL_LOCK_DBG", "JTAG_DO", "", "PG_EINT8"},
+	"PG9":  {"UTAR1_CTS", "", "JTAG_DI", "", "PG_EINT9"},
+	"PG10": {"H_I2S2_MCLK", "X32KFOUT", "", "", "PG_EINT10"},
+	"PG11": {"H_I2S2_BCLK", "", "BIST_RESULT0", "", "PG_EINT11"},
+	"PG12": {"H_I2S2_LRCK", "", "BIST_RESULT1", "", "PG_EINT12"},
+	"PG13": {"H_I2S2_DOUT0", "H_I2S2_DOUT1", "BIST_RESULT2", "", "PG_EINT13"},
+	"PG14": {"H_I2S2_DIN0", "H_I2S2_DOUT1", "BIST_RESULT3", "", "PG_EINT14"},
+	"PG15": {"UTAR2_TX", "", "", "TWI4_SCK", "PG_EINT15"},
+	"PG16": {"UTAR2_RX", "", "", "TWI4_SDA", "PG_EINT16"},
+	"PG17": {"UTAR2_RTS", "", "", "TWI3_SCK", "PG_EINT17"},
+	"PG18": {"UTAR2_CTS", "", "", "TWI3_SDA", "PG_EINT18"},
+	"PG19": {"", "", "PWM1", "", "PG_EINT19"},
 }
 
 // mapH6Pins uses mappingH6 to actually set the altFunc fields of all gpio
