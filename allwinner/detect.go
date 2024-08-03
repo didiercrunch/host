@@ -5,7 +5,6 @@
 package allwinner
 
 import (
-	"fmt"
 	"strings"
 	"sync"
 
@@ -42,7 +41,6 @@ func IsA20() bool {
 // It looks for the string "sun50iw1p1" in /proc/device-tree/compatible.
 func IsA64() bool {
 	detection.do()
-	fmt.Printf("IsA64?  %t\n", detection.isA64)
 	return detection.isA64
 }
 
