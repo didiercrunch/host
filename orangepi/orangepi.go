@@ -9,6 +9,7 @@ package orangepi
 import (
 	"errors"
 	"fmt"
+	"periph.io/x/host/v3/orangepi/zero3"
 	"strings"
 
 	"periph.io/x/conn/v3/driver/driverreg"
@@ -19,19 +20,21 @@ import (
 	"periph.io/x/host/v3/distro"
 )
 
-// Present return true if a Orange Pi board is detected.
-func Present() bool {
-	if isArm {
-		// This works for the Orange Pi Zero, not sure if other Orange Pi boards
-		// match the same DTModel prefix.
-		return strings.HasPrefix(distro.DTModel(), "OrangePi")
-	}
+// This works for the Orange Pi Zero and Orange Pi Zero 3,
+// not sure if other Orange Pi boards match the same
+// DTModel prefix.
+func isOrangePiBoard(dtModel string) bool {
+	strings.HasPrefix(distro.DTModel(), "OrangePi")
+}
 
-	return false
+// Present return true if an Orange Pi board is detected.
+func Present() bool {
+	return isArm && isOrangePiBoard(distro.DTModel())
 }
 
 const (
-	boardZero string = "Orange Pi Zero" // + LTS (H2/H3 have identical pinouts)
+	orangePiZero  string = "OrangePi Zero"   // + LTS (H2/H3 have identical pinouts)
+	orangePiZero3 string = "OrangePi Zero 3" // + LTS (H2/H3 have identical pinouts)
 )
 
 var (
@@ -77,48 +80,70 @@ var (
 	FUN1_13 pin.Pin = allwinner.PL11     // IR-RX
 )
 
+func registerHeadersForOrangePiZero() error {
+	if err := pinreg.Register("PA", [][]pin.Pin{
+		{PA1_1, PA1_2},
+		{PA1_3, PA1_4},
+		{PA1_5, PA1_6},
+		{PA1_7, PA1_8},
+		{PA1_9, PA1_10},
+		{PA1_11, PA1_12},
+		{PA1_13, PA1_14},
+		{PA1_15, PA1_16},
+		{PA1_17, PA1_18},
+		{PA1_19, PA1_20},
+		{PA1_21, PA1_22},
+		{PA1_23, PA1_24},
+		{PA1_25, PA1_26},
+	}); err != nil {
+		return err
+	}
+
+	// 13pin function interface
+	return pinreg.Register("FUN", [][]pin.Pin{
+		{FUN1_1},
+		{FUN1_2},
+		{FUN1_3},
+		{FUN1_4},
+		{FUN1_5},
+		{FUN1_6},
+		{FUN1_7},
+		{FUN1_8},
+		{FUN1_9},
+		{FUN1_10},
+		{FUN1_11},
+		{FUN1_12},
+		{FUN1_13},
+	})
+}
+
+func registerHeadersForOrangePiZero3() error {
+	return pinreg.Register("PA", [][]pin.Pin{
+		{zero3.PA1_1, zero3.PA1_2},
+		{zero3.PA1_3, zero3.PA1_4},
+		{zero3.PA1_5, zero3.PA1_6},
+		{zero3.PA1_7, zero3.PA1_8},
+		{zero3.PA1_9, zero3.PA1_10},
+		{zero3.PA1_11, zero3.PA1_12},
+		{zero3.PA1_13, zero3.PA1_14},
+		{zero3.PA1_15, zero3.PA1_16},
+		{zero3.PA1_17, zero3.PA1_18},
+		{zero3.PA1_19, zero3.PA1_20},
+		{zero3.PA1_21, zero3.PA1_22},
+		{zero3.PA1_23, zero3.PA1_24},
+		{zero3.PA1_25, zero3.PA1_26},
+	})
+}
+
 // registerHeaders registers the headers for various Orange Pi boards. Currently
 // only Orange Pi Zero is supported.
 func registerHeaders(model string) error {
 	// http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-Zero.html
-	if strings.Contains(model, boardZero) {
-		// 26pin expansion port
-		if err := pinreg.Register("PA", [][]pin.Pin{
-			{PA1_1, PA1_2},
-			{PA1_3, PA1_4},
-			{PA1_5, PA1_6},
-			{PA1_7, PA1_8},
-			{PA1_9, PA1_10},
-			{PA1_11, PA1_12},
-			{PA1_13, PA1_14},
-			{PA1_15, PA1_16},
-			{PA1_17, PA1_18},
-			{PA1_19, PA1_20},
-			{PA1_21, PA1_22},
-			{PA1_23, PA1_24},
-			{PA1_25, PA1_26},
-		}); err != nil {
-			return err
-		}
-
-		// 13pin function interface
-		if err := pinreg.Register("FUN", [][]pin.Pin{
-			{FUN1_1},
-			{FUN1_2},
-			{FUN1_3},
-			{FUN1_4},
-			{FUN1_5},
-			{FUN1_6},
-			{FUN1_7},
-			{FUN1_8},
-			{FUN1_9},
-			{FUN1_10},
-			{FUN1_11},
-			{FUN1_12},
-			{FUN1_13},
-		}); err != nil {
-			return err
-		}
+	if model == orangePiZero {
+		return registerHeadersForOrangePiZero()
+	}
+	if model == orangePiZero3 {
+		return registerHeadersForOrangePiZero3()
 	}
 
 	return nil
