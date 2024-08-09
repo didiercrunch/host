@@ -223,6 +223,7 @@ func (p *Pin) Read() gpio.Level {
 // WaitForEdge implements gpio.PinIn.
 func (p *Pin) WaitForEdge(timeout time.Duration) bool {
 	// Run lockless, as the normal use is to call in a busy loop.
+	fmt.Println("Waiting for hedge")
 	var ms int
 	if timeout == -1 {
 		ms = -1
@@ -232,10 +233,13 @@ func (p *Pin) WaitForEdge(timeout time.Duration) bool {
 	start := time.Now()
 	for {
 		if nr, err := p.event.Wait(ms); err != nil {
+			fmt.Printf("Received an error %s\n", err)
 			return false
 		} else if nr == 1 {
 			// TODO(maruel): According to pigpio, the correct way to consume the
 			// interrupt is to call Seek().
+
+			fmt.Printf("Received a value %d\n", nr)
 			return true
 		}
 		// A signal occurred.
@@ -243,6 +247,7 @@ func (p *Pin) WaitForEdge(timeout time.Duration) bool {
 			ms = int((timeout - time.Since(start)) / time.Millisecond)
 		}
 		if ms <= 0 {
+			fmt.Println("Timed out! return false")
 			return false
 		}
 	}
